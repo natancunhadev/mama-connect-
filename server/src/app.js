@@ -1,8 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-
-require('./config/database')
-const pool = require('./config/database')
+const supabase = require('./config/supabase')
 
 const app = express()
 
@@ -13,12 +11,18 @@ app.get('/', (req, res) => {
   res.json({ message: 'Mama Connect API is running 💛' })
 })
 
-app.get('/health/db', async (req, res) => {
+// Teste: listar 1 registro da tabela users
+app.get('/health/supabase', async (req, res) => {
   try {
-    const r = await pool.query('SELECT 1 as ok')
-    res.json({ db: 'ok', result: r.rows[0] })
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, email, created_at')
+      .limit(1)
+
+    if (error) return res.status(500).json({ ok: false, error: error.message })
+    return res.json({ ok: true, data })
   } catch (e) {
-    res.status(500).json({ db: 'error', message: e.message })
+    return res.status(500).json({ ok: false, error: e.message })
   }
 })
 
