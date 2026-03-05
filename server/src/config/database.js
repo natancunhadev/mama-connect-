@@ -8,11 +8,11 @@ const pool = new Pool({
 })
 
 pool.on('connect', () => {
-  console.log('✅ Connected to PostgreSQL')
+  console.log(' connected to PostgreSQL')
 })
 
 pool.on('error', (err) => {
-  console.error('❌ Unexpected database error', err)
+  console.error('unexpected database error', err)
 })
 
 module.exports = pool
